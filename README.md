@@ -16,19 +16,21 @@ This script automates the setup of a new **MacBook Pro** for developers, install
   - Ensures Git commands use the correct identity for each directory.
 - **Step-by-Step Instructions**: Guides users in adding SSH keys to **GitHub** and **Bitbucket**.
 
-## Installation
-1. Clone this repository:
+## Installation (For a Brand-New MacBook)
+If Git is not installed, follow these steps:
+
+1. Open **Terminal** (Press `Cmd + Space`, type **Terminal**, and hit **Enter**).
+2. Download the script manually:
    ```bash
-   git clone git@github.com:yourusername/mac-dev-autoconfig.git
-   cd mac-dev-autoconfig
+   curl -O https://raw.githubusercontent.com/reicolina/mac-dev-autoconfig/main/macbook_setup.sh
    ```
 
-2. Make the script executable:
+3. Make the script executable:
    ```bash
    chmod +x macbook_setup.sh
    ```
 
-3. Run the script:
+4. Run the script:
    ```bash
    ./macbook_setup.sh
    ```
@@ -61,3 +63,4 @@ Feel free to submit pull requests or issues to enhance this script.
 
 ## License
 This project is licensed under the **MIT License**.
+
