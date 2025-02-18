@@ -53,6 +53,7 @@ APPS=(
     avg-antivirus
     zoom
     core-tunnel
+    chatgpt
 )
 
 for app in "${APPS[@]}"; do
