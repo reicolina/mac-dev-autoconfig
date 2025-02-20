@@ -44,6 +44,7 @@ APPS=(
     arc
     sublime-text
     cursor
+    visual-studio-code
     dbeaver-community
     sourcetree
     hey
