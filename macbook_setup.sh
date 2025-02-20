@@ -66,13 +66,27 @@ for app in "${APPS[@]}"; do
     fi
 done
 
-# Prompt user for details
-echo "Enter your full name (for Git config):"
-read FULL_NAME
-echo "Enter your Bitbucket email:"
-read BITBUCKET_EMAIL
-echo "Enter your GitHub email:"
-read GITHUB_EMAIL
+# Prompt user for details only if needed
+if [ ! -f "$SSH_KEY" ] || [ ! -f "$BITBUCKET_SSH_KEY" ] || [ ! -f "$GITHUB_SSH_KEY" ]; then
+    if ask_for_confirmation "Do you want to set up Git user details? (recommended)"; then
+        if [ ! -f "$SSH_KEY" ]; then
+            echo "Enter your full name (for Git config):"
+            read FULL_NAME
+        fi
+        
+        if [ ! -f "$BITBUCKET_SSH_KEY" ]; then
+            echo "Enter your Bitbucket email:"
+            read BITBUCKET_EMAIL
+        fi
+        
+        if [ ! -f "$GITHUB_SSH_KEY" ]; then
+            echo "Enter your GitHub email:"
+            read GITHUB_EMAIL
+        fi
+    else
+        echo "Skipping Git user details setup..."
+    fi
+fi
 
 # Generate SSH key if not exists
 SSH_KEY="$HOME/.ssh/id_rsa"
@@ -168,6 +182,15 @@ cat "$GITHUB_SSH_KEY.pub"
 echo "\n2. Go to https://github.com/settings/keys"
 echo "3. Click 'New SSH Key' and add a new key."
 echo "4. Paste the copied key and save."
+
+# Instructions for Dev Container extension
+echo "\nTo install the Dev Container extension in Cursor:"
+echo "1. Download the extension from:"
+echo "https://marketplace.visualstudio.com/_apis/public/gallery/publishers/ms-vscode-remote/vsextensions/remote-containers/0.397.0/vspackage"
+echo "2. Open Cursor"
+echo "3. Press Cmd+Shift+P and type 'Install from VSIX'"
+echo "4. Select the downloaded .vsix file"
+echo "5. Restart Cursor when prompted"
 
 # Final message
 echo "\nSetup complete! Enjoy your new MacBook Pro."
