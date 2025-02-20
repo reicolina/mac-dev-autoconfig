@@ -165,6 +165,21 @@ EOL
     fi
 fi
 
+if ask_for_confirmation "Do you want to configure Git global settings? (recommended)"; then
+    # Configure Git globally
+    git config --global user.name "$FULL_NAME"
+    git config --global user.email "$GITHUB_EMAIL"
+
+    # Configure Git for specific directories
+    git config --global includeIf.gitdir:~/dev/bitbucket/.path ~/.gitconfig-bitbucket
+    echo "[user]
+        email = $BITBUCKET_EMAIL" > ~/.gitconfig-bitbucket
+
+    git config --global includeIf.gitdir:~/dev/github/.path ~/.gitconfig-github
+    echo "[user]
+        email = $GITHUB_EMAIL" > ~/.gitconfig-github
+fi
+
 # Instructions for using SSH keys
 echo "\n\nINSTRUCTIONS:\n"
 echo "To add your SSH keys to Bitbucket:"
