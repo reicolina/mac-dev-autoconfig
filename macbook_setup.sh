@@ -55,6 +55,7 @@ APPS=(
     zoom
     core-tunnel
     chatgpt
+    mongodb-compass
 )
 
 for app in "${APPS[@]}"; do
