@@ -56,6 +56,7 @@ APPS=(
     core-tunnel
     chatgpt
     mongodb-compass
+    google-chrome
 )
 
 for app in "${APPS[@]}"; do
