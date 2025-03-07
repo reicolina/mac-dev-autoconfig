@@ -38,6 +38,38 @@ if ! command -v git &>/dev/null; then
     fi
 fi
 
+# Install Python 3 if not installed or outdated
+if ! command -v python3 &>/dev/null; then
+    SHOULD_INSTALL=true
+else
+    # Get current version number (e.g., 3.9.7 -> 3.9)
+    CURRENT_VERSION=$(python3 -c 'import sys; print(".".join(map(str, sys.version_info[:2])))')
+    # Compare with minimum version (3.11 is current stable as of 2024)
+    if [ "$(printf '%s\n' "3.11" "$CURRENT_VERSION" | sort -V | head -n1)" = "$CURRENT_VERSION" ]; then
+        echo "Current Python version $CURRENT_VERSION is older than recommended version 3.11"
+        SHOULD_INSTALL=true
+    else
+        SHOULD_INSTALL=false
+    fi
+fi
+
+if [ "$SHOULD_INSTALL" = true ] && ask_for_confirmation "Do you want to install/upgrade Python 3? (recommended)"; then
+    brew install python3
+    # Unlink and relink Python to ensure Homebrew version is active
+    brew unlink python3 && brew link python3
+    # Add Homebrew Python to PATH in shell profile
+    echo 'export PATH="/opt/homebrew/opt/python3/libexec/bin:$PATH"' >> ~/.zshrc
+    # Reload shell profile
+    source ~/.zshrc
+    # Install pipx for managing Python applications
+    brew install pipx
+    # Ensure pipx is on PATH
+    pipx ensurepath
+    # Verify Python version
+    echo "Installed Python version:"
+    /opt/homebrew/bin/python3 --version
+fi
+
 # Install Applications using Homebrew Cask
 APPS=(
     slack
