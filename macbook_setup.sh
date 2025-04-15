@@ -70,6 +70,46 @@ if [ "$SHOULD_INSTALL" = true ] && ask_for_confirmation "Do you want to install/
     /opt/homebrew/bin/python3 --version
 fi
 
+# Install Node.js if not installed or outdated
+if ask_for_confirmation "Do you want to install/upgrade Node.js? (recommended)"; then
+    if ! command -v node &>/dev/null; then
+        SHOULD_INSTALL_NODE=true
+    else
+        # Get current version number
+        CURRENT_NODE_VERSION=$(node -v | cut -d'v' -f2)
+        # Compare with minimum version (18 is LTS as of 2024)
+        if [ "$(printf '%s\n' "18.0.0" "$CURRENT_NODE_VERSION" | sort -V | head -n1)" = "$CURRENT_NODE_VERSION" ]; then
+            echo "Current Node.js version $CURRENT_NODE_VERSION is older than recommended version 18"
+            SHOULD_INSTALL_NODE=true
+        else
+            SHOULD_INSTALL_NODE=false
+        fi
+    fi
+
+    if [ "$SHOULD_INSTALL_NODE" = true ]; then
+        brew install node
+        # Install nvm for Node.js version management
+        curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.7/install.sh | bash
+        # Add nvm to shell profile
+        echo 'export NVM_DIR="$HOME/.nvm"
+[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
+[ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion' >> ~/.zshrc
+        # Reload shell profile
+        source ~/.zshrc
+        # Install latest LTS version of Node.js
+        nvm install --lts
+        # Set it as default
+        nvm alias default node
+        # Verify Node.js version
+        echo "Installed Node.js version:"
+        node --version
+        echo "Installed npm version:"
+        npm --version
+    else
+        echo "Node.js is already installed and up to date. Skipping..."
+    fi
+fi
+
 # Install Applications using Homebrew Cask
 APPS=(
     slack
@@ -89,6 +129,9 @@ APPS=(
     chatgpt
     mongodb-compass
     google-chrome
+    table-tool
+    caffeine
+    claude
 )
 
 for app in "${APPS[@]}"; do
