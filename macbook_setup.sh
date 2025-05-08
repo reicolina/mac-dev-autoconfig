@@ -38,6 +38,13 @@ if ! command -v git &>/dev/null; then
     fi
 fi
 
+# Install k6 if not installed
+if ! command -v k6 &>/dev/null; then
+    if ask_for_confirmation "Do you want to install k6? (recommended)"; then
+        brew install k6
+    fi
+fi
+
 # Install Python 3 if not installed or outdated
 if ! command -v python3 &>/dev/null; then
     SHOULD_INSTALL=true
