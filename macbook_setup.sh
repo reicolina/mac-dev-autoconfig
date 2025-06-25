@@ -45,6 +45,13 @@ if ! command -v k6 &>/dev/null; then
     fi
 fi
 
+# Install Ollama if not installed
+if ! command -v ollama &>/dev/null; then
+    if ask_for_confirmation "Do you want to install Ollama? (recommended)"; then
+        brew install ollama
+    fi
+fi
+
 # Install Python 3 if not installed or outdated
 if ! command -v python3 &>/dev/null; then
     SHOULD_INSTALL=true
