@@ -139,6 +139,8 @@ APPS=(
     table-tool
     caffeine
     claude
+    orbstack
+    obsidian
 )
 
 for app in "${APPS[@]}"; do
