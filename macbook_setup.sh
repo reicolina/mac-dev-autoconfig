@@ -52,6 +52,20 @@ if ! command -v ollama &>/dev/null; then
     fi
 fi
 
+# Install btop if not installed
+if ! command -v btop &>/dev/null; then
+    if ask_for_confirmation "Do you want to install btop? (recommended)"; then
+        brew install btop
+    fi
+fi
+
+# Install gitui if not installed
+if ! command -v gitui &>/dev/null; then
+    if ask_for_confirmation "Do you want to install gitui? (recommended)"; then
+        brew install gitui
+    fi
+fi
+
 # Install Python 3 if not installed or outdated
 if ! command -v python3 &>/dev/null; then
     SHOULD_INSTALL=true
@@ -148,6 +162,7 @@ APPS=(
     claude
     orbstack
     obsidian
+    warp
 )
 
 for app in "${APPS[@]}"; do
