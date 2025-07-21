@@ -66,6 +66,39 @@ if ! command -v gitui &>/dev/null; then
     fi
 fi
 
+# Install AWS CLI if not installed
+if ! command -v aws &>/dev/null; then
+    if ask_for_confirmation "Do you want to install AWS CLI? (recommended)"; then
+        brew install awscli
+    fi
+fi
+
+# Configure AWS CLI SSO access
+if command -v aws &>/dev/null; then
+    if ask_for_confirmation "Do you want to configure AWS CLI SSO access now? (recommended)"; then
+        echo "Starting AWS CLI SSO configuration..."
+        aws configure sso
+        # Prompt to set the created SSO profile as default
+        if ask_for_confirmation "Do you want to set your AWS SSO profile as the default profile?"; then
+            echo "Enter the name of the SSO profile you just created (as shown in ~/.aws/config):"
+            read SSO_PROFILE_NAME
+            AWS_CONFIG_FILE="$HOME/.aws/config"
+            # Remove any existing default profile
+            awk '/\[profile default\]/{flag=1; next} /\[profile /{flag=0} !flag' "$AWS_CONFIG_FILE" > "$AWS_CONFIG_FILE.tmp" && mv "$AWS_CONFIG_FILE.tmp" "$AWS_CONFIG_FILE"
+            # Copy only the selected [profile ...] section as default, skipping any [sso-session ...] blocks
+            awk -v profile="$SSO_PROFILE_NAME" '
+                $0 ~ "\\[profile " profile "\\]" {flag=1; print "[profile default]"; next}
+                /^\[profile / && flag {flag=0}
+                /^\[sso-session / && flag {flag=0}
+                flag && $0 !~ /^\[sso-session / {print}
+            ' "$AWS_CONFIG_FILE" >> "$AWS_CONFIG_FILE"
+            echo "Set $SSO_PROFILE_NAME as the default AWS CLI profile."
+        fi
+    else
+        echo "Skipping AWS CLI SSO configuration. You can run 'aws configure sso' later."
+    fi
+fi
+
 # Install Python 3 if not installed or outdated
 if ! command -v python3 &>/dev/null; then
     SHOULD_INSTALL=true
@@ -163,6 +196,9 @@ APPS=(
     orbstack
     obsidian
     warp
+    viscosity
+    notion
+    claude-code
 )
 
 for app in "${APPS[@]}"; do
