@@ -171,6 +171,18 @@ if ask_for_confirmation "Do you want to install/upgrade Node.js? (recommended)";
     fi
 fi
 
+# Install Cypress globally using npm if not installed
+if command -v npm &>/dev/null; then
+    if ! command -v cypress &>/dev/null; then
+        if ask_for_confirmation "Do you want to install Cypress (end-to-end testing framework) globally with npm? (recommended)"; then
+            npm install -g cypress
+            echo "Cypress installed globally. Run 'cypress open' to launch."
+        fi
+    else
+        echo "Cypress is already installed globally. Skipping..."
+    fi
+fi
+
 # Install Applications using Homebrew Cask
 APPS=(
     slack
@@ -179,6 +191,8 @@ APPS=(
     cursor
     visual-studio-code
     dbeaver-community
+    dbeaverlite
+    nosql-workbench
     sourcetree
     hey
     postman
@@ -190,6 +204,7 @@ APPS=(
     chatgpt
     mongodb-compass
     google-chrome
+    firefox
     table-tool
     caffeine
     claude
@@ -199,6 +214,7 @@ APPS=(
     viscosity
     notion
     claude-code
+    proxyman
 )
 
 for app in "${APPS[@]}"; do
